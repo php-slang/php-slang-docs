@@ -1,0 +1,31 @@
+{
+    "title": "PhpSlang",
+    "tagline": "Functional PHP the right way",
+    "author": "Witold Adamus",
+    "ignore": {
+            "files": ["DRAFTS.md"],
+            "folders": ["99_DRAFTS"]
+    },
+    "live": {
+        "clean_urls": true
+    },
+    "html": {
+        "theme": "daux-blue",
+        "breadcrumbs": true,
+        "breadcrumb_separator": " -> ",
+        "toggle_code": false,
+        "date_modified": true,
+        "float": false,
+        "inherit_index": true,
+
+        "repo": "php-slang/php-slang-docs",
+        "edit_on_github": "php-slang/php-slang-docs/blob/gh-pages/docs",
+        "twitter": ["_phpslang", "xsolve"],
+        "google_analytics": "UA-86414385-1",
+        "links": {
+            "GitHub Repo": "https://github.com/php-slang/php-slang",
+            "Supported by xsolve": "http://xsolve.pl",
+            "Made by Witold Adamus": "http://wit3k.pl"
+        }
+    }
+}
