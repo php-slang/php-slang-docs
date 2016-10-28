@@ -1,0 +1,12 @@
+{
+    "name": "php-slang/php-slang-docs",
+    "description": "Documentation for PhpSlang project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Witold Adamus",
+            "email": "witold.adamus@xsolve.pl"
+        }
+    ],
+    "require": {}
+}
