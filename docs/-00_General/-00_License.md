@@ -1,23 +1,3 @@
-# Functional PHP the right way
-
-## Installation & requirements
-
-PhpSlang is super easy to install and it has no externall dependencies except a PHP7+
-
-### Install with composer:
-
-    composer install php-slang/php-slang
-
-### That's all! You are ready to go!
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
 # The MIT License (MIT)
 
 Copyright (c) 2016 Witold Adamus

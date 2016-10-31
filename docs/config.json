@@ -17,7 +17,7 @@
         "date_modified": true,
         "float": false,
         "inherit_index": true,
-
+        "auto_landing": false,
         "repo": "php-slang/php-slang-docs",
         "edit_on_github": "php-slang/php-slang-docs/blob/gh-pages/docs",
         "twitter": ["_phpslang", "xsolve"],
