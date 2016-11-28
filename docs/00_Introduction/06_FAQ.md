@@ -64,7 +64,7 @@ won't solve your problem. TL;DR look for [race condition](https://en.wikipedia.o
 Place an issue on [Github](https://github.com/php-slang/php-slang/issues) so we know it exists.
 It will be fixed ASAP.
 
-## I want to use it in commercial project
+## I want to use it in a commercial project
 Feel free - it's distributed under [MIT License](../-00_General/-00_License.md).
 
 ## When feature X will be available?

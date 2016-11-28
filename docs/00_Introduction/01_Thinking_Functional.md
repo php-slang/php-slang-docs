@@ -7,7 +7,7 @@ What are the biggest benefits of functional programming?
 - Maintainable code
 - Scalability out of box
 - Easier testing
-- Less code
+- Shorter code
 - Easy to learn
 
 You gain all of this by switching to FP (and PhpSlang will help you with it).
@@ -29,9 +29,40 @@ well. See this [great Greg Young's talk](https://www.youtube.com/watch?v=kZL41SM
 yourself what event sourcing has to do with DDD check out Eric Evans
 [book](https://books.google.pl/books/about/Domain_Driven_Design.html?id=hHBf4YxMnWMC&source=kp_cover&redir_esc=y)).
 
-## Where's a difference?
+## The problem (with imperative programming)
+### Every day headache
+Does [this story](http://turnoff.us/geek/the-depressed-developer/) feel familiar to you?
+Or bunch of other funny pictures about developers struggling with NullPointerExceptions or OutOfBoundExceptions?
+There are tons of everyday small glitches in our projects. Sometimes such problems are resolved at code review when
+other developers in your team find it, sometimes on production instance when angry clients start to call a support line.
+We have to keep in mind lots of tiny dependencies that sum up to huge graph of connections which most developers have to
+keep in mind when maintaining existing code.
+The problem is that we are just humans and our buffer is quite tiny and [easy to flush](http://i.imgur.com/3uyRWGJ.jpg).
+
+### Scalability issues
+How many simultaneous threads with concurrent access to your data you're able to implement with full confidence?
+2? 10? 20? What would you say about 100000? It is possible with pure functions. With shared mutable state
+[not](http://henrikeichenhardt.blogspot.de/2013/06/why-shared-mutable-state-is-root-of-all.html).
+And scalability is just one dimension of a whole problem.
+
+### Mutability is counterintuitive
+The business requirements tend to grow and change.
+FP won't solve all your problems with complexity but will not create separate complexity on it's own and using immutable
+data structures and monads will help you handle this complexity.
+
+Imperative style can seem like a standard way of giving your computer instructions to process.
+That's how computers work - instruction after instruction, are'nt they?
+Well maybe (as long we're using Von Neumann computers) but it's definitely not how human brains work
+and not how the world around us works.
+Do you remember when the last time some physical object in your surrounding was just reasigned?
+
+## The solution
 ### 1. Immutability!
 The biggest difference between eg. Haskell and PHP is that you CAN NOT reassign values.
+Keeping immutability will require a lot more discipline on your side when you use PHP,
+but syntax in not important - thinking is!
+
+From this day just keep in mind that:
 
 **There is no such thing as variable!**
 
@@ -49,7 +80,7 @@ Imperative paradigm which is a standard for most of PHP applications leaves you 
 achieve things.
 Functional paradigm leaves you with a code that describes WHAT you want to achieve.
 
-### 3. Function is a first class citizen
+### 3. Function as a first class citizen
 It must be mentioned because - well it's a functional programming.
 Points below are rather a technical detail - but when you have these tools,
 completely new possibilities are open for you.
@@ -63,7 +94,7 @@ completely new possibilities are open for you.
 ### Less bugs
 Immutability - again. Lets consider a following linear function you can remember from your childhood:
 
-f(x) = x*2
+`f(x) = x * 2`
 
 When x equals 2 you just know that the result of computation is 4. When 6 it's 12, when 7 it's 14 and so on.
 
@@ -73,11 +104,11 @@ This function DOES NOT:
 - add new objects to globally available array
 - create a temporary array to accumulate computed data
 
-This is just a simple example, but it's actually a whole point of FP.
+This is just a simple example, but it's actually an ultimate point of FP.
 
 ### Maintainable code
 Code describes WHAT it does, not HOW. So you don't have to think that much on what was the intention of
-a developer who created this piece of code - this information is here.
+a developer who created this piece of code - this information is already here.
 Having a project written in a purely functional manner means also easier debugging and code navigation.
 As long as all function calls are explicit, you'll see very little or no surprises when debugging.
 
@@ -103,21 +134,21 @@ Just simple checks for return value and domain specific edge cases.
 And again: [TDD](https://en.wikipedia.org/wiki/Test-driven_development)
 and [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development) are still on the menu.
 
-### Less code
-When you use nested function calls end up with a much more condensed code.
+### Shorter code
+When you use nested function calls you end up with a much more condensed code.
 Pipelined calls also tend to take less space and when everything is immutable,
 most of your functions contain only one return statement - which appears in a first line of a method
 (yes braces, semicolon and `return` keyword become to seem redundant - but unfortunately
 you still have to use them in PHP).
 
-Code condensation is visible especially for immutable collections - when you chain `map()` and `filter()`
+Code condensation is visible especially for immutable collections - when you chain eg. `map()` and `filter()`
 calls it becomes readable even for people with no developing skills.
 
 ### Easy to learn
 One of the biggest myths of functional programming is that it has a big entry level.
 Source of such a belief can be found in a track of life of an experienced software developers.
 They are used to see small increments. When you develop with Zend for 3 years and then jump to Symfony - most of
-concepts and ideas are the same, only approach to solve problems is different.
+concepts are the same, only approach to solve problems is different.
 Functional programming requires you to really change the way you think (and it can be painful at the beginning), but
 it's really not that much to learn (there's actually less things you have to learn to start compared to OOP).
 When currying and monads give you a headache remember days when questions like
@@ -134,8 +165,10 @@ Immutability also does'nt mean that you cant create eg. database engine with pur
 Haskel's [STM](https://wiki.haskell.org/Software_transactional_memory) for a reference.
 There's also a high chance that you are familiar with [RabbitMQ](https://www.rabbitmq.com/)
 which is written in [Erlang](https://www.erlang.org/).
+There is a lot of other software written in purely functional languages which are capable of storing varying data,
+only approach to data changes is different.
 
-## Tiny comparision
+## Show me the code
 
 It's a prolixity without showing the code, so let's see this small example.
 Both functions below return the same result for identical input. The only difference is used paradigm.
@@ -143,7 +176,7 @@ Both functions below return the same result for identical input. The only differ
 Imperative implementation:
 ```
 <?php
-function averageOfNumbersSmallerThat(array $numbers, int $threshold) : string {
+function averageOfNumbersSmallerThan(array $numbers, int $threshold) : string {
   $numbersSmallerThanThreshold = [];
   foreach ($numbers as $number) {
     if ($number <= $threshold) {
@@ -176,13 +209,26 @@ function averageOfNumbersSmallerThat(array $numbers, int $threshold) : string {
 Functional implementation (using PhpSlang):
 ```
 <?php
-function averageOfNumbersSmallerThat(ListCollection $numbers, int $threshold) : string {
+function averageOfNumbersSmallerThan(ListCollection $numbers, int $threshold) : string {
   return $numbers
-         ->filter(function($number) use ($threshold) { return $number <= $threshold; })
-         ->map(function($number) { return $number / 3; })
-         ->avg()
-         ->map(function($avg) { return 'Average is: ' . $avg;})
-         ->getOrElse('It\'s impossible to count average for a given data.');
+    ->filter(function($number) use ($threshold) { return $number <= $threshold; })
+    ->map(function($number) { return $number / 3; })
+    ->avg()
+    ->map(function($avg) { return 'Average is: ' . $avg; })
+    ->getOrElse('It\'s impossible to count average for a given data.');
 }
 ?>
 ```
+
+## Summing things up
+Does an example above look convincing?
+It's just a beginning. Remember that this example describes only one method and we're just scrapping the surface here.
+We did'nt even touched the danger zones of exception handling, mutable object fields,
+validation and any kind of storage.
+
+The most important facts to remember before reading other materials on functional programming are:
+- immutability - lets you deal with complexity and helps you create code which won't surprise you
+- WHAT not HOW - this is the question that should be answered by your code
+- treat function as a first class citizen - your system is composed of functions - they deserve some respect.
+
+Have fun with functional programming!
