@@ -4,12 +4,12 @@ PHP is a mature language yet it has it downsides especially in terms of function
 Purpouse of a following article is pointing out some problems you'll face when you'll
 start to code functionally (but not only).
 
-*Short note*: Following article compare PHP with other functional languages.
+**Short note**: *Following article compare PHP with other functional languages.
 Scala is given as an example but this language was picket from tons of other languages because of its popularity.
 Please don't take a false assumption that a basic meaning of this article is that PHP should become Scala.
 PHP isn't Scala and will never be and probably should'nt become one. It has it's own upsides, but this article
 is focused on downsides - especially in context of functional programming and gives
-some answers on PhpSlang purpose and history.
+some answers on PhpSlang purpose and history.*
 
 ### 1. Verbose anonymous function syntax
 When you start to program functionally with PHP you will create new functions - a lot.
@@ -97,10 +97,9 @@ users
 ```
 
 ### 2. No generic types
-This is the biggest pain in the ass of all listed PHP sins.
-
-This problem touches not only developers who want to introduce functional programming.
-This is a problem of a whole community and everyone who created non trivial OOP application feel this problem.
+Lack of [generic types](https://en.wikipedia.org/wiki/Generic_programming) touches not only developers who want
+to introduce functional programming. This is a problem of a whole community and everyone who
+created non trivial OOP application feel this problem.
 
 On 2016-01-06 there was introduced a proposal to implement this feature.
 More about a proposal and shape of eventual implementation in PHP you can find at
@@ -136,6 +135,22 @@ write type definition similar to:
 function listTransformer(ListCollection<User> $someList);
 ```
 
+Remember that generics are also composable so with generic types you could define more complicated structures.
+Take a look at following example in Scala (you can achieve very similar things with Java or C++ as well).
+
+```scala
+def searchArticles(String searchQuery) : Either<List<Article>, SearchError>
+```
+
+Such definition in PHP at the moment is limited to:
+
+```php
+function searchArticles(string $searchQuery) : Either;
+```
+
+And you as a developer have to remember that Either should contain `ListCollection` of `Article`'s or `SearchError`
+entity with detailed information about what happened wrong.
+
 ### 3. Convenient reassignments
 When you decide to create purely functional code with PHP it will require a lot of discipline on your side.
 And there is no way to stop other team members from breaking your convention.
@@ -148,9 +163,13 @@ Take a look at following example.
 ```php
 $pleaseIDontWantToBecomeMutant = 'regular human';
 
+$someList = [1, 2, 3];
+
 foreach ($someList as $pleaseIDontWantToBecomeMutant) {
   //do nothing
 }
+
+echo $pleaseIDontWantToBecomeMutant;
 ```
 
 What do you think what will be the value of a `$pleaseIDontWantToBecomeMutant`?
@@ -265,7 +284,7 @@ PhpSlang's [Copy trait](../01_Usage/01_Essentials/01_Copy_Trait.md) partially re
 allows you to write something like:
 
 ```php
-class Houser{
+class House {
   use Copy;
 
   /**
@@ -308,6 +327,7 @@ echo $smallHouse->getSize();  //writes 'small' as expected :)
 #### No wildcard import
 
 #### No pipeline operator
+https://wiki.php.net/rfc/pipe-operator
 
 ### 6. Imperative ecosystem
 

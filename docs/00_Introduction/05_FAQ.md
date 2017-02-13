@@ -10,9 +10,9 @@ or [Elixir](http://elixir-lang.org/).
 All great ideas you'll learn out there will change the way you use PHP, but it requires a lot of discipline
 to write immutable, purely functional code in PHP (and PhpSlang helps you here).
 
-It can sound a little bossy but at the moment PhpSlang documentation seems to be the most comprehensive guide
-on functional programming in PHP. There are of course other resources and they are listed on
-[Other resources](../-00_General/02_Other_Resources.md) page.
+PhpSlang documentation aims to become the most comprehensive guide on functional programming in PHP.
+There is not much resources of FP for PHP but concepts from other languages can be used with PHP as well.
+For more information's please refer to [Other resources](../-00_General/02_Other_Resources.md) page.
 
 ## When not to use functional programming?
 - Your default approach should be - write everything functionally.

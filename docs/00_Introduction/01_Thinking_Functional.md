@@ -174,8 +174,7 @@ It's a prolixity without showing the code, so let's see this small example.
 Both functions below return the same result for identical input. The only difference is used paradigm.
 
 Imperative implementation:
-```
-<?php
+```php
 function averageOfNumbersSmallerThan(array $numbers, int $threshold) : string {
   $numbersSmallerThanThreshold = [];
   foreach ($numbers as $number) {
@@ -207,8 +206,7 @@ function averageOfNumbersSmallerThan(array $numbers, int $threshold) : string {
 ```
 
 Functional implementation (using PhpSlang):
-```
-<?php
+```php
 function averageOfNumbersSmallerThan(ListCollection $numbers, int $threshold) : string {
   return $numbers
     ->filter(function($number) use ($threshold) { return $number <= $threshold; })
