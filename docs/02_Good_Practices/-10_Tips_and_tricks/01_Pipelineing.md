@@ -7,21 +7,21 @@ Lets consider a following example:
 ```
 class ALotOfNestedFunctionCallsExample {
 
-	//it doesn't matter what those functions do internally
-	abstract protected function transformation1(TypeA $input): TypeB;
-	abstract protected function transformation2(TypeB $input): TypeC;
-	abstract protected function transformation3(TypeC $input): TypeD;
-	abstract protected function transformation4(TypeD $input): TypeE;
+  //it doesn't matter what those functions do internally
+  abstract protected function transformation1(TypeA $input): TypeB;
+  abstract protected function transformation2(TypeB $input): TypeC;
+  abstract protected function transformation3(TypeC $input): TypeD;
+  abstract protected function transformation4(TypeD $input): TypeE;
 
-	public function giveMeSomeThingInteresting(TypeA $input): TypeE {
-		return $this->transformation4(
-			$this->transformation3(
-				$this->transformation2(
-					$this->transformation1($input)
-				)
-			)
-		);
-	}
+  public function giveMeSomeThingInteresting(TypeA $input): TypeE {
+    return $this->transformation4(
+      $this->transformation3(
+        $this->transformation2(
+          $this->transformation1($input)
+        )
+      )
+    );
+  }
 }
 ```
 
@@ -34,18 +34,18 @@ What you would do in such situation in languages like Haskell, Erlang/Elixir or 
 ```
 class ALotOfNestedFunctionCallsExample {
 
-	//it doesn't matter what those functions do internally
-	abstract protected function transformation1(TypeA $input): TypeB;
-	abstract protected function transformation2(TypeB $input): TypeC;
-	abstract protected function transformation3(TypeC $input): TypeD;
-	abstract protected function transformation4(TypeD $input): TypeE;
+  //it doesn't matter what those functions do internally
+  abstract protected function transformation1(TypeA $input): TypeB;
+  abstract protected function transformation2(TypeB $input): TypeC;
+  abstract protected function transformation3(TypeC $input): TypeD;
+  abstract protected function transformation4(TypeD $input): TypeE;
 
-	public function giveMeSomeThingInteresting(TypeA $input): TypeE {
-		return $this->operation1($input)
-			|> $this->operation2($$)
-			|> $this->operation3($$)
-			|> $this->operation4($$);
-	}
+  public function giveMeSomeThingInteresting(TypeA $input): TypeE {
+    return $this->operation1($input)
+      |> $this->operation2($$)
+      |> $this->operation3($$)
+      |> $this->operation4($$);
+  }
 }
 ```
 
@@ -60,25 +60,25 @@ Use `Option` in a non-typical way.
 ```
 class ALotOfNestedFunctionCallsExample {
 
-	//it doesn't matter what those functions do internally
-	abstract protected function transformation1(TypeA $input): TypeB;
-	abstract protected function transformation2(TypeB $input): TypeC;
-	abstract protected function transformation3(TypeC $input): TypeD;
-	abstract protected function transformation4(TypeD $input): TypeE;
+  //it doesn't matter what those functions do internally
+  abstract protected function transformation1(TypeA $input): TypeB;
+  abstract protected function transformation2(TypeB $input): TypeC;
+  abstract protected function transformation3(TypeC $input): TypeD;
+  abstract protected function transformation4(TypeD $input): TypeE;
 
-	public function giveMeSomeThingInteresting(TypeA $input): TypeE {
-		return (new Some($this->operation1($input))
-			->map(function(TypeB $inp): TypeC {
-				return $this->operation2($inp);
-			})
-			->map(function(TypeC $inp): TypeD {
-				return $this->operation3($inp);
-			})
-			->map(function(TypeD $inp): TypeE {
-				return $this->operation4($inp);
-			})
-			->get();
-	}
+  public function giveMeSomeThingInteresting(TypeA $input): TypeE {
+    return (new Some($this->operation1($input))
+      ->map(function(TypeB $inp): TypeC {
+        return $this->operation2($inp);
+      })
+      ->map(function(TypeC $inp): TypeD {
+        return $this->operation3($inp);
+      })
+      ->map(function(TypeD $inp): TypeE {
+        return $this->operation4($inp);
+      })
+      ->get();
+  }
 }
 ```
 
@@ -87,18 +87,18 @@ And with [extractors](../../01_Usage/03_Extractors.md) this can be squeezed to:
 ```
 class ALotOfNestedFunctionCallsExample {
 
-	//it doesn't matter what those functions do internally
-	abstract protected function transformation1(TypeA $input): TypeB;
-	abstract protected function transformation2(TypeB $input): TypeC;
-	abstract protected function transformation3(TypeC $input): TypeD;
-	abstract protected function transformation4(TypeD $input): TypeE;
+  //it doesn't matter what those functions do internally
+  abstract protected function transformation1(TypeA $input): TypeB;
+  abstract protected function transformation2(TypeB $input): TypeC;
+  abstract protected function transformation3(TypeC $input): TypeD;
+  abstract protected function transformation4(TypeD $input): TypeE;
 
-	public function giveMeSomeThingInteresting(TypeA $input): TypeE {
-		return (new Some($this->operation1($input))
-			->map(E($this)->operation2())
-			->map(E($this)->operation3())
-			->map(E($this)->operation4())
-			->get();
-	}
+  public function giveMeSomeThingInteresting(TypeA $input): TypeE {
+    return (new Some($this->operation1($input))
+      ->map(E($this)->operation2())
+      ->map(E($this)->operation3())
+      ->map(E($this)->operation4())
+      ->get();
+  }
 }
 ```

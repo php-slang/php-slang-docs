@@ -78,7 +78,7 @@
     <div class="Page__header">
         <h1><a href="../../Good_Practices/Common_Mistakes.html">Good Practices</a> <svg class="Page__header--separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175"><path d="M360.73 229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1 0s-5.3 13.8 0 19.1l215.5 215.5-215.5 215.5c-5.3 5.3-5.3 13.8 0 19.1 2.6 2.6 6.1 4 9.5 4 3.4 0 6.9-1.3 9.5-4l225.1-225.1c5.3-5.2 5.3-13.8.1-19z"/></svg> <a href="../../Good_Practices/Tips_and_tricks/Pipelineing.html">Tips and tricks</a> <svg class="Page__header--separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175"><path d="M360.73 229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1 0s-5.3 13.8 0 19.1l215.5 215.5-215.5 215.5c-5.3 5.3-5.3 13.8 0 19.1 2.6 2.6 6.1 4 9.5 4 3.4 0 6.9-1.3 9.5-4l225.1-225.1c5.3-5.2 5.3-13.8.1-19z"/></svg> <a href="../../Good_Practices/Tips_and_tricks/Pipelineing.html">Pipelineing</a></h1>
                 <span style="float: left; font-size: 10px; color: gray;">
-            Monday, February 13, 2017 12:10 AM        </span>
+            Tuesday, March 21, 2017 1:57 AM        </span>
                         <span style="float: right; font-size: 10px; color: gray;">
             <a href="https://github.com/php-slang/php-slang-docs/blob/gh-pages/docs/02_Good_Practices/-10_Tips_and_tricks/01_Pipelineing.md" target="_blank">Edit on GitHub</a>
         </span>
@@ -91,21 +91,21 @@
 <p>Lets consider a following example:</p>
 <pre><code>class ALotOfNestedFunctionCallsExample {
 
-	//it doesn't matter what those functions do internally
-	abstract protected function transformation1(TypeA $input): TypeB;
-	abstract protected function transformation2(TypeB $input): TypeC;
-	abstract protected function transformation3(TypeC $input): TypeD;
-	abstract protected function transformation4(TypeD $input): TypeE;
+  //it doesn't matter what those functions do internally
+  abstract protected function transformation1(TypeA $input): TypeB;
+  abstract protected function transformation2(TypeB $input): TypeC;
+  abstract protected function transformation3(TypeC $input): TypeD;
+  abstract protected function transformation4(TypeD $input): TypeE;
 
-	public function giveMeSomeThingInteresting(TypeA $input): TypeE {
-		return $this-&gt;transformation4(
-			$this-&gt;transformation3(
-				$this-&gt;transformation2(
-					$this-&gt;transformation1($input)
-				)
-			)
-		);
-	}
+  public function giveMeSomeThingInteresting(TypeA $input): TypeE {
+    return $this-&gt;transformation4(
+      $this-&gt;transformation3(
+        $this-&gt;transformation2(
+          $this-&gt;transformation1($input)
+        )
+      )
+    );
+  }
 }
 </code></pre>
 <p>Method <code>giveMeSomeThingInteresting</code> returns a value which is a result of nested function calls.</p>
@@ -113,18 +113,18 @@
 <p>What you would do in such situation in languages like Haskell, Erlang/Elixir or F# you'd most probably use a pipeline operator (<a href="http://elixir-lang.org/getting-started/enumerables-and-streams.html#the-pipe-operator" class="external">Elixir example</a>). If ther would be an easy way to pipe operations in PHP example above would change into:</p>
 <pre><code>class ALotOfNestedFunctionCallsExample {
 
-	//it doesn't matter what those functions do internally
-	abstract protected function transformation1(TypeA $input): TypeB;
-	abstract protected function transformation2(TypeB $input): TypeC;
-	abstract protected function transformation3(TypeC $input): TypeD;
-	abstract protected function transformation4(TypeD $input): TypeE;
+  //it doesn't matter what those functions do internally
+  abstract protected function transformation1(TypeA $input): TypeB;
+  abstract protected function transformation2(TypeB $input): TypeC;
+  abstract protected function transformation3(TypeC $input): TypeD;
+  abstract protected function transformation4(TypeD $input): TypeE;
 
-	public function giveMeSomeThingInteresting(TypeA $input): TypeE {
-		return $this-&gt;operation1($input)
-			|&gt; $this-&gt;operation2($$)
-			|&gt; $this-&gt;operation3($$)
-			|&gt; $this-&gt;operation4($$);
-	}
+  public function giveMeSomeThingInteresting(TypeA $input): TypeE {
+    return $this-&gt;operation1($input)
+      |&gt; $this-&gt;operation2($$)
+      |&gt; $this-&gt;operation3($$)
+      |&gt; $this-&gt;operation4($$);
+  }
 }
 </code></pre>
 <p>But PHP does not support such construct at the moment.</p>
@@ -133,43 +133,43 @@
 <p>Use <code>Option</code> in a non-typical way.</p>
 <pre><code>class ALotOfNestedFunctionCallsExample {
 
-	//it doesn't matter what those functions do internally
-	abstract protected function transformation1(TypeA $input): TypeB;
-	abstract protected function transformation2(TypeB $input): TypeC;
-	abstract protected function transformation3(TypeC $input): TypeD;
-	abstract protected function transformation4(TypeD $input): TypeE;
+  //it doesn't matter what those functions do internally
+  abstract protected function transformation1(TypeA $input): TypeB;
+  abstract protected function transformation2(TypeB $input): TypeC;
+  abstract protected function transformation3(TypeC $input): TypeD;
+  abstract protected function transformation4(TypeD $input): TypeE;
 
-	public function giveMeSomeThingInteresting(TypeA $input): TypeE {
-		return (new Some($this-&gt;operation1($input))
-			-&gt;map(function(TypeB $inp): TypeC {
-				return $this-&gt;operation2($inp);
-			})
-			-&gt;map(function(TypeC $inp): TypeD {
-				return $this-&gt;operation3($inp);
-			})
-			-&gt;map(function(TypeD $inp): TypeE {
-				return $this-&gt;operation4($inp);
-			})
-			-&gt;get();
-	}
+  public function giveMeSomeThingInteresting(TypeA $input): TypeE {
+    return (new Some($this-&gt;operation1($input))
+      -&gt;map(function(TypeB $inp): TypeC {
+        return $this-&gt;operation2($inp);
+      })
+      -&gt;map(function(TypeC $inp): TypeD {
+        return $this-&gt;operation3($inp);
+      })
+      -&gt;map(function(TypeD $inp): TypeE {
+        return $this-&gt;operation4($inp);
+      })
+      -&gt;get();
+  }
 }
 </code></pre>
 <p>And with <a href="../../Usage/Extractors.html">extractors</a> this can be squeezed to:</p>
 <pre><code>class ALotOfNestedFunctionCallsExample {
 
-	//it doesn't matter what those functions do internally
-	abstract protected function transformation1(TypeA $input): TypeB;
-	abstract protected function transformation2(TypeB $input): TypeC;
-	abstract protected function transformation3(TypeC $input): TypeD;
-	abstract protected function transformation4(TypeD $input): TypeE;
+  //it doesn't matter what those functions do internally
+  abstract protected function transformation1(TypeA $input): TypeB;
+  abstract protected function transformation2(TypeB $input): TypeC;
+  abstract protected function transformation3(TypeC $input): TypeD;
+  abstract protected function transformation4(TypeD $input): TypeE;
 
-	public function giveMeSomeThingInteresting(TypeA $input): TypeE {
-		return (new Some($this-&gt;operation1($input))
-			-&gt;map(E($this)-&gt;operation2())
-			-&gt;map(E($this)-&gt;operation3())
-			-&gt;map(E($this)-&gt;operation4())
-			-&gt;get();
-	}
+  public function giveMeSomeThingInteresting(TypeA $input): TypeE {
+    return (new Some($this-&gt;operation1($input))
+      -&gt;map(E($this)-&gt;operation2())
+      -&gt;map(E($this)-&gt;operation3())
+      -&gt;map(E($this)-&gt;operation4())
+      -&gt;get();
+  }
 }
 </code></pre>
     </div>

@@ -78,7 +78,7 @@
     <div class="Page__header">
         <h1><a href="../../Usage/Essentials/Copy_Trait.html">Usage</a> <svg class="Page__header--separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175"><path d="M360.73 229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1 0s-5.3 13.8 0 19.1l215.5 215.5-215.5 215.5c-5.3 5.3-5.3 13.8 0 19.1 2.6 2.6 6.1 4 9.5 4 3.4 0 6.9-1.3 9.5-4l225.1-225.1c5.3-5.2 5.3-13.8.1-19z"/></svg> <a href="../../Usage/Essentials/Copy_Trait.html">Essentials</a> <svg class="Page__header--separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175"><path d="M360.73 229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1 0s-5.3 13.8 0 19.1l215.5 215.5-215.5 215.5c-5.3 5.3-5.3 13.8 0 19.1 2.6 2.6 6.1 4 9.5 4 3.4 0 6.9-1.3 9.5-4l225.1-225.1c5.3-5.2 5.3-13.8.1-19z"/></svg> <a href="../../Usage/Essentials/Option.html">Option</a></h1>
                 <span style="float: left; font-size: 10px; color: gray;">
-            Monday, February 13, 2017 12:16 AM        </span>
+            Tuesday, March 21, 2017 1:57 AM        </span>
                         <span style="float: right; font-size: 10px; color: gray;">
             <a href="https://github.com/php-slang/php-slang-docs/blob/gh-pages/docs/01_Usage/01_Essentials/03_Option.md" target="_blank">Edit on GitHub</a>
         </span>
@@ -163,72 +163,72 @@ PhpSlang implementation of <code>Option</code> just makes use of a polymorphism 
 <h2 id="page_More_complicated_example">More complicated example</h2>
 <p>As you can read in <a href="../../Introduction/Dont_be_afraid_of_monads.html">this article</a> monads are able to wrap eachother, and there also exist a possibility to flatten a structure of nested monads of the same kind. Let's consider that we have nested <code>Options</code> in our example. Take a look at example DTOs.</p>
 <pre><code class="language-php">class User {
-	private $email;
-	private $profile;
+  private $email;
+  private $profile;
 
-	public __construct(
-		string $email,
-		Option $profile
-	) {
-		$this-&gt;email = $email;
-		$this-&gt;profile = $profile;
-	}
+  public __construct(
+    string $email,
+    Option $profile
+  ) {
+    $this-&gt;email = $email;
+    $this-&gt;profile = $profile;
+  }
 
-	public function getEmail(): string {
-		return $this-&gt;email;
-	}
+  public function getEmail(): string {
+    return $this-&gt;email;
+  }
 
-	public function getProfile(): Option {
-		return $this-&gt;profile;
-	}
+  public function getProfile(): Option {
+    return $this-&gt;profile;
+  }
 }
 
 class Profile {
-	private $address;
-	private $phone;
+  private $address;
+  private $phone;
 
-	public __construct(
-		Option $address,
-		Option $phone
-	) {
-		$this-&gt;address = $address;
-		$this-&gt;phone = $phone;
-	}
+  public __construct(
+    Option $address,
+    Option $phone
+  ) {
+    $this-&gt;address = $address;
+    $this-&gt;phone = $phone;
+  }
 
-	public function getAddress(): Option {
-		return $this-&gt;address;
-	}
+  public function getAddress(): Option {
+    return $this-&gt;address;
+  }
 
-	public function getPhone(): Option {
-		return $this-&gt;phone;
-	}
+  public function getPhone(): Option {
+    return $this-&gt;phone;
+  }
 }
 class Address {
-	private $street;
-	private $buildingNumber;
-	private $localNumber;
+  private $street;
+  private $buildingNumber;
+  private $localNumber;
 
-	public __construct(
-		string $street,
-		int $buildingNumber,
-		Option $localNumber
-	) {
-		$this-&gt;street = $street;
-		$this-&gt;buildingNumber = $buildingNumber;
-		$this-&gt;localNumber = $localNumber;
-	}
+  public __construct(
+    string $street,
+    int $buildingNumber,
+    Option $localNumber
+  ) {
+    $this-&gt;street = $street;
+    $this-&gt;buildingNumber = $buildingNumber;
+    $this-&gt;localNumber = $localNumber;
+  }
 
-	public function getStreet(): string {
-		return $this-&gt;street;
-	}
+  public function getStreet(): string {
+    return $this-&gt;street;
+  }
 
-	public function getBuildingNumber(): int {
-		return $this-&gt;buildingNumber;
-	}
+  public function getBuildingNumber(): int {
+    return $this-&gt;buildingNumber;
+  }
 
-	public function getLocalNumber(): Option {
-		return $this-&gt;localNumber;
-	}
+  public function getLocalNumber(): Option {
+    return $this-&gt;localNumber;
+  }
 }
 </code></pre>
 <p>What we have here is a nested structure and we want to write a function that displays a local number.
@@ -241,52 +241,52 @@ Keep in mind that:</p>
 </ul>
 <p>First take a look at how it probably would look like if we would not use <code>Option</code> monad and just check <code>null</code> as usual:</p>
 <pre><code class="language-php">public function displayLocalNumber(string $email): string {
-	$user = $this-&gt;userRepository-&gt;findByEmail($email));
-	if (
-		!is_null($user)
-		&amp;&amp; !is_null($user-&gt;getProfile())
-		&amp;&amp; !is_null($user-&gt;getProfile()-&gt;getAddress())
-		&amp;&amp; !is_null($user-&gt;getProfile()-&gt;getAddress()-&gt;getLocalNumber())) {
-		return 'Local number is: ' . $user-&gt;getProfile()-&gt;getAddress()-&gt;getLocalNumber();
-	} else {
-		return 'No sufficient data';
-	}
+  $user = $this-&gt;userRepository-&gt;findByEmail($email));
+  if (
+    !is_null($user)
+    &amp;&amp; !is_null($user-&gt;getProfile())
+    &amp;&amp; !is_null($user-&gt;getProfile()-&gt;getAddress())
+    &amp;&amp; !is_null($user-&gt;getProfile()-&gt;getAddress()-&gt;getLocalNumber())) {
+    return 'Local number is: ' . $user-&gt;getProfile()-&gt;getAddress()-&gt;getLocalNumber();
+  } else {
+    return 'No sufficient data';
+  }
 }
 </code></pre>
 <p>And if you use Doctrine or other ORM/ODM you can't be sure if every getter isn't actually a call to a database slowing down your application proportionally to network latency.
 So it would be safer to write a code above in a following way:</p>
 <pre><code class="language-php">public function displayLocalNumber(string $email): string {
-	$user = $this-&gt;userRepository-&gt;findByEmail($email));
-	if (!is_null($user)) {
-		$profile = $user-&gt;getProfile();
-		if (!is_null($profile)) {
-			$address = $profile-&gt;getAddress();
-			if (!is_null($address)) {
-				$localNumber = $address-&gt;getLocalNumber();
-				if (!is_null($localNumber)) {
-					return 'Local number is: ' . $localNumber;
-				}
-			}
-		}
-	}
-	return 'No sufficient data';
+  $user = $this-&gt;userRepository-&gt;findByEmail($email));
+  if (!is_null($user)) {
+    $profile = $user-&gt;getProfile();
+    if (!is_null($profile)) {
+      $address = $profile-&gt;getAddress();
+      if (!is_null($address)) {
+        $localNumber = $address-&gt;getLocalNumber();
+        if (!is_null($localNumber)) {
+          return 'Local number is: ' . $localNumber;
+        }
+      }
+    }
+  }
+  return 'No sufficient data';
 }
 </code></pre>
 <p>Years of experience show that a problem above is usually even worse because developers tend to check <code>null</code> in a variety of ways so in some part of an applications you see <code>is_null</code> in other <code>$val == null</code> and few more variants in parts written by developers who don't work with you anymore.</p>
 <p>How to make this code less error prone and easier to reson about? How to make this ball of mud readable and extendible?
 Take a look at example using <code>Option</code>:</p>
 <pre><code class="language-php">public function displayLocalNumber(string $email): string {
-	return $this-&gt;userRepository-&gt;findByEmail($email))
-		-&gt;flatMap(function(User $user): Option {
-			return $user-&gt;getProfile();
-		})
-		-&gt;flatMap(function(Profile $profile): Option {
-			return $profile-&gt;getAddress();
-		})
-		-&gt;flatMap(function(Address $address): Option {
-			return 'Local number is: ' . $address-&gt;getLocalNumber();
-		})
-		-&gt;getOrElse('No sufficient data');
+  return $this-&gt;userRepository-&gt;findByEmail($email))
+    -&gt;flatMap(function(User $user): Option {
+      return $user-&gt;getProfile();
+    })
+    -&gt;flatMap(function(Profile $profile): Option {
+      return $profile-&gt;getAddress();
+    })
+    -&gt;flatMap(function(Address $address): Option {
+      return 'Local number is: ' . $address-&gt;getLocalNumber();
+    })
+    -&gt;getOrElse('No sufficient data');
 }
 </code></pre>
 <p>What we did here?</p>
@@ -300,11 +300,11 @@ Take a look at example using <code>Option</code>:</p>
 2nd is an indicator of emptyness and its default value is <code>null</code></p>
 <p>So if you want create a function which returns a <code>None</code> for empty array you may write a following function:</p>
 <pre><code class="language-php">function calculateAverage(array $inputData): float {
-	return Option::of($inputData, [])
-		-&gt;map(function(array $data): float {
-			return array_sum($data) / count($data);
-		})
-		-&gt;getOrElse(0.0);
+  return Option::of($inputData, [])
+    -&gt;map(function(array $data): float {
+      return array_sum($data) / count($data);
+    })
+    -&gt;getOrElse(0.0);
 }
 </code></pre>
 <p>This way you can calculate average value of elements of an array without fear you could feel when you see <code>PHP Warning: Division by zero in php shell code on line ...</code> in production logs. (btw. you don't have to implement average method on your own, it's build in in PhpSlang collection library).</p>
@@ -314,13 +314,13 @@ Take a look at example using <code>Option</code>:</p>
 <p>In such case instead usage of method <code>getOrElse</code> it's recommended to use <code>getOrCall</code> which takes a function as a parameter. This function is run only when your <code>Option</code> is an instance of <code>None</code></p>
 <p>Short example:</p>
 <pre><code class="language-php">function calculateAverage(array $inputData): float {
-	return Option::of($inputData, [])
-		-&gt;map(function(array $data): float {
-			return array_sum($data) / count($data);
-		})
-		-&gt;getOrCall(function(): float {
-			return $this-&gt;veryComplicatedCalculations();
-		});
+  return Option::of($inputData, [])
+    -&gt;map(function(array $data): float {
+      return array_sum($data) / count($data);
+    })
+    -&gt;getOrCall(function(): float {
+      return $this-&gt;veryComplicatedCalculations();
+    });
 }
 </code></pre>
 <h3 id="page_isEmpty_isNotEmpty">isEmpty &amp; isNotEmpty</h3>

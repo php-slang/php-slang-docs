@@ -78,7 +78,7 @@
     <div class="Page__header">
         <h1><a href="../Usage/Essentials/Copy_Trait.html">Usage</a> <svg class="Page__header--separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175"><path d="M360.73 229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1 0s-5.3 13.8 0 19.1l215.5 215.5-215.5 215.5c-5.3 5.3-5.3 13.8 0 19.1 2.6 2.6 6.1 4 9.5 4 3.4 0 6.9-1.3 9.5-4l225.1-225.1c5.3-5.2 5.3-13.8.1-19z"/></svg> <a href="../Usage/Memoization.html">Memoization</a></h1>
                 <span style="float: left; font-size: 10px; color: gray;">
-            Wednesday, February 15, 2017 9:29 AM        </span>
+            Tuesday, March 21, 2017 1:57 AM        </span>
                         <span style="float: right; font-size: 10px; color: gray;">
             <a href="https://github.com/php-slang/php-slang-docs/blob/gh-pages/docs/01_Usage/07_Memoization.md" target="_blank">Edit on GitHub</a>
         </span>
@@ -90,11 +90,11 @@
 <p>One of advantages (and principles) of functional programming is referential transparency. Ite means that a function run with an identical set of parameters should always return identical result. Putting things this way we can fast endup with a conclussion that there is no sense in complete execution of methods that were already used at leas once with the same set of parameters. This makes sense especially if computations performed by a given method are resource exhaustive.</p>
 <p>Consider a following example:</p>
 <pre><code class="language-php">class NonTrivialComputations {
-	public function heavyComputations(string $name): int {
-		//it doesn't matter what this function does, but we know that:
-		// 1 - it's pure function (no side effects, no external resources used)
-		// 2 - computations may take a long time and we want to optimize this part
-	}
+  public function heavyComputations(string $name): int {
+    //it doesn't matter what this function does, but we know that:
+    // 1 - it's pure function (no side effects, no external resources used)
+    // 2 - computations may take a long time and we want to optimize this part
+  }
 }
 </code></pre>
 <p>Running such code will always lead to executing <em>heavyComputations</em>.</p>
@@ -103,23 +103,23 @@
 <pre><code class="language-php">namespace PhpSlang\Memoisation\Memo;
 
 class NonTrivialComputations {
-	/**
-	 * @var Closure
-	 */
-	public $heavyComputations;
+  /**
+   * @var Closure
+   */
+  public $heavyComputations;
 
-	public function __construct()
+  public function __construct()
     {
         $this-&gt;heavyComputations = (new Memo)-&gt;memoize(function (string $name): int {
-        	return $this-&gt;heavyComputations($name);
+          return $this-&gt;heavyComputations($name);
         };
     }
 
-	private function heavyComputations(string $name): int {
-		//it doesn't matter what this function does, but we know that:
-		// 1 - it's pure function (no side effects, no external resources used)
-		// 2 - computations may take a long time and we want to optimize this part
-	}
+  private function heavyComputations(string $name): int {
+    //it doesn't matter what this function does, but we know that:
+    // 1 - it's pure function (no side effects, no external resources used)
+    // 2 - computations may take a long time and we want to optimize this part
+  }
 }
 
 </code></pre>

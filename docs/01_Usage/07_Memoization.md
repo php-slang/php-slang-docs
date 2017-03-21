@@ -5,11 +5,11 @@ One of advantages (and principles) of functional programming is referential tran
 Consider a following example:
 ```php
 class NonTrivialComputations {
-	public function heavyComputations(string $name): int {
-		//it doesn't matter what this function does, but we know that:
-		// 1 - it's pure function (no side effects, no external resources used)
-		// 2 - computations may take a long time and we want to optimize this part
-	}
+  public function heavyComputations(string $name): int {
+    //it doesn't matter what this function does, but we know that:
+    // 1 - it's pure function (no side effects, no external resources used)
+    // 2 - computations may take a long time and we want to optimize this part
+  }
 }
 ```
 
@@ -23,23 +23,23 @@ PHP does not give us any kind of tools to make this part easy (eg [lazy val](htt
 namespace PhpSlang\Memoisation\Memo;
 
 class NonTrivialComputations {
-	/**
-	 * @var Closure
-	 */
-	public $heavyComputations;
+  /**
+   * @var Closure
+   */
+  public $heavyComputations;
 
-	public function __construct()
+  public function __construct()
     {
         $this->heavyComputations = (new Memo)->memoize(function (string $name): int {
-        	return $this->heavyComputations($name);
+          return $this->heavyComputations($name);
         };
     }
 
-	private function heavyComputations(string $name): int {
-		//it doesn't matter what this function does, but we know that:
-		// 1 - it's pure function (no side effects, no external resources used)
-		// 2 - computations may take a long time and we want to optimize this part
-	}
+  private function heavyComputations(string $name): int {
+    //it doesn't matter what this function does, but we know that:
+    // 1 - it's pure function (no side effects, no external resources used)
+    // 2 - computations may take a long time and we want to optimize this part
+  }
 }
 
 ```

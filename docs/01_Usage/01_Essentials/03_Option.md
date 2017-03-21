@@ -112,72 +112,72 @@ As you see, we have only one return statement in a controller, all operations ar
 As you can read in [this article](../../00_Introduction/03_Dont_be_afraid_of_monads.md) monads are able to wrap eachother, and there also exist a possibility to flatten a structure of nested monads of the same kind. Let's consider that we have nested `Options` in our example. Take a look at example DTOs.
 ```php
 class User {
-	private $email;
-	private $profile;
+  private $email;
+  private $profile;
 
-	public __construct(
-		string $email,
-		Option $profile
-	) {
-		$this->email = $email;
-		$this->profile = $profile;
-	}
+  public __construct(
+    string $email,
+    Option $profile
+  ) {
+    $this->email = $email;
+    $this->profile = $profile;
+  }
 
-	public function getEmail(): string {
-		return $this->email;
-	}
+  public function getEmail(): string {
+    return $this->email;
+  }
 
-	public function getProfile(): Option {
-		return $this->profile;
-	}
+  public function getProfile(): Option {
+    return $this->profile;
+  }
 }
 
 class Profile {
-	private $address;
-	private $phone;
+  private $address;
+  private $phone;
 
-	public __construct(
-		Option $address,
-		Option $phone
-	) {
-		$this->address = $address;
-		$this->phone = $phone;
-	}
+  public __construct(
+    Option $address,
+    Option $phone
+  ) {
+    $this->address = $address;
+    $this->phone = $phone;
+  }
 
-	public function getAddress(): Option {
-		return $this->address;
-	}
+  public function getAddress(): Option {
+    return $this->address;
+  }
 
-	public function getPhone(): Option {
-		return $this->phone;
-	}
+  public function getPhone(): Option {
+    return $this->phone;
+  }
 }
 class Address {
-	private $street;
-	private $buildingNumber;
-	private $localNumber;
+  private $street;
+  private $buildingNumber;
+  private $localNumber;
 
-	public __construct(
-		string $street,
-		int $buildingNumber,
-		Option $localNumber
-	) {
-		$this->street = $street;
-		$this->buildingNumber = $buildingNumber;
-		$this->localNumber = $localNumber;
-	}
+  public __construct(
+    string $street,
+    int $buildingNumber,
+    Option $localNumber
+  ) {
+    $this->street = $street;
+    $this->buildingNumber = $buildingNumber;
+    $this->localNumber = $localNumber;
+  }
 
-	public function getStreet(): string {
-		return $this->street;
-	}
+  public function getStreet(): string {
+    return $this->street;
+  }
 
-	public function getBuildingNumber(): int {
-		return $this->buildingNumber;
-	}
+  public function getBuildingNumber(): int {
+    return $this->buildingNumber;
+  }
 
-	public function getLocalNumber(): Option {
-		return $this->localNumber;
-	}
+  public function getLocalNumber(): Option {
+    return $this->localNumber;
+  }
 }
 ```
 
@@ -191,36 +191,36 @@ Keep in mind that:
 First take a look at how it probably would look like if we would not use `Option` monad and just check `null` as usual:
 ```php
 public function displayLocalNumber(string $email): string {
-	$user = $this->userRepository->findByEmail($email));
-	if (
-		!is_null($user)
-		&& !is_null($user->getProfile())
-		&& !is_null($user->getProfile()->getAddress())
-		&& !is_null($user->getProfile()->getAddress()->getLocalNumber())) {
-		return 'Local number is: ' . $user->getProfile()->getAddress()->getLocalNumber();
-	} else {
-		return 'No sufficient data';
-	}
+  $user = $this->userRepository->findByEmail($email));
+  if (
+    !is_null($user)
+    && !is_null($user->getProfile())
+    && !is_null($user->getProfile()->getAddress())
+    && !is_null($user->getProfile()->getAddress()->getLocalNumber())) {
+    return 'Local number is: ' . $user->getProfile()->getAddress()->getLocalNumber();
+  } else {
+    return 'No sufficient data';
+  }
 }
 ```
 And if you use Doctrine or other ORM/ODM you can't be sure if every getter isn't actually a call to a database slowing down your application proportionally to network latency.
 So it would be safer to write a code above in a following way:
 ```php
 public function displayLocalNumber(string $email): string {
-	$user = $this->userRepository->findByEmail($email));
-	if (!is_null($user)) {
-		$profile = $user->getProfile();
-		if (!is_null($profile)) {
-			$address = $profile->getAddress();
-			if (!is_null($address)) {
-				$localNumber = $address->getLocalNumber();
-				if (!is_null($localNumber)) {
-					return 'Local number is: ' . $localNumber;
-				}
-			}
-		}
-	}
-	return 'No sufficient data';
+  $user = $this->userRepository->findByEmail($email));
+  if (!is_null($user)) {
+    $profile = $user->getProfile();
+    if (!is_null($profile)) {
+      $address = $profile->getAddress();
+      if (!is_null($address)) {
+        $localNumber = $address->getLocalNumber();
+        if (!is_null($localNumber)) {
+          return 'Local number is: ' . $localNumber;
+        }
+      }
+    }
+  }
+  return 'No sufficient data';
 }
 ```
 Years of experience show that a problem above is usually even worse because developers tend to check `null` in a variety of ways so in some part of an applications you see `is_null` in other `$val == null` and few more variants in parts written by developers who don't work with you anymore.
@@ -229,17 +229,17 @@ How to make this code less error prone and easier to reson about? How to make th
 Take a look at example using `Option`:
 ```php
 public function displayLocalNumber(string $email): string {
-	return $this->userRepository->findByEmail($email))
-		->flatMap(function(User $user): Option {
-			return $user->getProfile();
-		})
-		->flatMap(function(Profile $profile): Option {
-			return $profile->getAddress();
-		})
-		->flatMap(function(Address $address): Option {
-			return 'Local number is: ' . $address->getLocalNumber();
-		})
-		->getOrElse('No sufficient data');
+  return $this->userRepository->findByEmail($email))
+    ->flatMap(function(User $user): Option {
+      return $user->getProfile();
+    })
+    ->flatMap(function(Profile $profile): Option {
+      return $profile->getAddress();
+    })
+    ->flatMap(function(Address $address): Option {
+      return 'Local number is: ' . $address->getLocalNumber();
+    })
+    ->getOrElse('No sufficient data');
 }
 ```
 What we did here?
@@ -261,11 +261,11 @@ Method `Option::of` takes two parameters.
 So if you want create a function which returns a `None` for empty array you may write a following function:
 ```php
 function calculateAverage(array $inputData): float {
-	return Option::of($inputData, [])
-		->map(function(array $data): float {
-			return array_sum($data) / count($data);
-		})
-		->getOrElse(0.0);
+  return Option::of($inputData, [])
+    ->map(function(array $data): float {
+      return array_sum($data) / count($data);
+    })
+    ->getOrElse(0.0);
 }
 ```
 This way you can calculate average value of elements of an array without fear you could feel when you see `PHP Warning:  Division by zero in php shell code on line ...` in production logs. (btw. you don't have to implement average method on your own, it's build in in PhpSlang collection library).
@@ -281,13 +281,13 @@ In such case instead usage of method `getOrElse` it's recommended to use `getOrC
 Short example:
 ```php
 function calculateAverage(array $inputData): float {
-	return Option::of($inputData, [])
-		->map(function(array $data): float {
-			return array_sum($data) / count($data);
-		})
-		->getOrCall(function(): float {
-			return $this->veryComplicatedCalculations();
-		});
+  return Option::of($inputData, [])
+    ->map(function(array $data): float {
+      return array_sum($data) / count($data);
+    })
+    ->getOrCall(function(): float {
+      return $this->veryComplicatedCalculations();
+    });
 }
 ```
 

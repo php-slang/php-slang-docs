@@ -32,7 +32,7 @@ We see that two bits of a puzzle are missing. We'll go back to it later in this 
 Just to remind. The simplest example as it only can be:
 ```php
 public foo($a) {
-	return $a * 2;
+  return $a * 2;
 }
 ```
 
@@ -41,7 +41,7 @@ This function returns parameter $a multiplied by 2.
 PHP gives us ability to typehint parameters taken by method and it's result so in this case it's safer (and recommended) to explicitly describe types:
 ```php
 public foo(int $a): int {
-	return $a * 2;
+  return $a * 2;
 }
 ```
 
@@ -49,9 +49,9 @@ In PHP functions can be defined as part of classes - in that case we call them *
 
 ```php
 class Bar {
-	public function foo(int $a): int {
-		return $a * 2;
-	}
+  public function foo(int $a): int {
+    return $a * 2;
+  }
 }
 ```
 
@@ -63,11 +63,11 @@ Let's consider a following function (regartheless if it's just a dangling functi
 
 ```php
 function doSomethingFunnyWith(string $originalTxt, int $times, Closure $transformation): string {
-	$accumulator = '';
-	for($i=0; $i < $times ;$i++) {
-		$accumulator .= $transformation($originalTxt);
-	}
-	return $accumulator;
+  $accumulator = '';
+  for($i=0; $i < $times ;$i++) {
+    $accumulator .= $transformation($originalTxt);
+  }
+  return $accumulator;
 }
 ```
 
@@ -75,9 +75,9 @@ This function:
 - has no side effects
 - contains variable *$accumulator* which is a bad practice in perspective of FP (and also when you thing about scalability), but we'll cover this topic later
 - take 3 parameters:
-	- some string to play with
-	- numeric value to indicate how many times we want to repeat transofmed text
-	- Closure (method) which is then used to transform $originalTxt
+  - some string to play with
+  - numeric value to indicate how many times we want to repeat transofmed text
+  - Closure (method) which is then used to transform $originalTxt
 
 When function takes another function as an argument we call it a **higher-order function**.
 
@@ -91,11 +91,11 @@ PHP gives you a way to define function just in a place you want to use it. Such 
 
 ```php
 echo doSomethingFunnyWith(
-	"DOO",
-	3,
-	function(string $inp): string {
-		return implode('_', str_split($inp));
-	}
+  "DOO",
+  3,
+  function(string $inp): string {
+    return implode('_', str_split($inp));
+  }
 );
 ```
 
@@ -103,15 +103,15 @@ But now let's consider a situation when you actually would like to define this f
 
 ```php
 function underscoresEverywhere(string $inp): string {
-	return implode('_', str_split($inp));
+  return implode('_', str_split($inp));
 }
 ```
 and now let's use it:
 ```php
 echo doSomethingFunnyWith(
-	"DOO",
-	3,
-	underscoresEverywhere
+  "DOO",
+  3,
+  underscoresEverywhere
 );
 ```
 hmm...
@@ -121,9 +121,9 @@ PHP Notice:  Use of undefined constant underscoresEverywhere - assumed 'undersco
 Well maybe:
 ```php
 echo doSomethingFunnyWith(
-	"DOO",
-	3,
-	underscoresEverywhere()
+  "DOO",
+  3,
+  underscoresEverywhere()
 );
 ```
 aahhh, again error:
@@ -143,13 +143,13 @@ So what is a propper way to use such function?
 As said previously - assign function to "variable":
 ```php
 $underscoresEverywhere = function (string $inp): string {
-	return implode('_', str_split($inp));
+  return implode('_', str_split($inp));
 };//don't forget about semicolon :)
 
 echo doSomethingFunnyWith(
-	"DOO",
-	3,
-	$underscoresEverywhere
+  "DOO",
+  3,
+  $underscoresEverywhere
 );
 
 ```
@@ -158,34 +158,34 @@ Same approach but inside a class:
 
 ```php
 class Foo {
-	/**
-	 * @var Closure
-	 */
-	$underscoresEverywhere;
+  /**
+   * @var Closure
+   */
+  $underscoresEverywhere;
 
-	public function __construct() {
-		$this->underscoresEverywhere = function (string $inp): string {
-			return implode('_', str_split($inp));
-		};
-		//BAD NEWS - passing methods inside class sucks too. If you want to make method "passable", you
-		// have to assign it to class field.
-	}
+  public function __construct() {
+    $this->underscoresEverywhere = function (string $inp): string {
+      return implode('_', str_split($inp));
+    };
+    //BAD NEWS - passing methods inside class sucks too. If you want to make method "passable", you
+    // have to assign it to class field.
+  }
 
-	private function doSomethingFunnyWith(string $originalTxt, int $times, Closure $transformation): string {
-		$accumulator = '';
-		for($i=0; $i < $times ;$i++) {
-			$accumulator .= $transformation($originalTxt);
-		}
-		return $accumulator;
-	}
+  private function doSomethingFunnyWith(string $originalTxt, int $times, Closure $transformation): string {
+    $accumulator = '';
+    for($i=0; $i < $times ;$i++) {
+      $accumulator .= $transformation($originalTxt);
+    }
+    return $accumulator;
+  }
 
-	public function testRide(): string {
-		return $this->doSomethingFunnyWith(
-			"DOO",
-			3,
-			$this->underscoresEverywhere
-		);
-	}
+  public function testRide(): string {
+    return $this->doSomethingFunnyWith(
+      "DOO",
+      3,
+      $this->underscoresEverywhere
+    );
+  }
 }
 
 echo (new Foo())->testRide(); //remember about additional brackets around constructor usage, so you can chain method calls with no need to use variables
@@ -197,15 +197,15 @@ You can also wrap every named function/method with the anonymous function:
 
 ```php
 function underscoresEverywhere(string $inp): string {
-	return implode('_', str_split($inp));
+  return implode('_', str_split($inp));
 }
 
 echo doSomethingFunnyWith(
-	"DOO",
-	3,
-	function(string $inp): string {
-		return underscoresEverywhere($inp);
-	}
+  "DOO",
+  3,
+  function(string $inp): string {
+    return underscoresEverywhere($inp);
+  }
 );
 
 ```
@@ -215,27 +215,27 @@ echo doSomethingFunnyWith(
 Same as version 2a but for a class definition:
 ```php
 class Foo {
-	private function underscoresEverywhere(string $inp): string {
-		return implode('_', str_split($inp));
-	}
+  private function underscoresEverywhere(string $inp): string {
+    return implode('_', str_split($inp));
+  }
 
-	private function doSomethingFunnyWith(string $originalTxt, int $times, Closure $transformation): string {
-		$accumulator = '';
-		for($i=0; $i < $times ;$i++) {
-			$accumulator .= $transformation($originalTxt);
-		}
-		return $accumulator;
-	}
+  private function doSomethingFunnyWith(string $originalTxt, int $times, Closure $transformation): string {
+    $accumulator = '';
+    for($i=0; $i < $times ;$i++) {
+      $accumulator .= $transformation($originalTxt);
+    }
+    return $accumulator;
+  }
 
-	public function testRide(): string {
-		return $this->doSomethingFunnyWith(
-			"DOO",
-			3,
-			function(string $inp): string {
-				return $this->underscoresEverywhere($inp);
-			}
-		);
-	}
+  public function testRide(): string {
+    return $this->doSomethingFunnyWith(
+      "DOO",
+      3,
+      function(string $inp): string {
+        return $this->underscoresEverywhere($inp);
+      }
+    );
+  }
 }
 
 echo (new Foo())->testRide();
@@ -248,25 +248,25 @@ Well - [PHP syntax does not spoil](../10_Additional_Articles/01_Top_10_Sins_of_P
 One more way to implement the example we iterate with, is to use `Callable` type for `doSomethingFunnyWith` definition instead of `Closure`.
 ```php
 class Foo {
-	private function underscoresEverywhere(string $inp): string {
-		return implode('_', str_split($inp));
-	}
+  private function underscoresEverywhere(string $inp): string {
+    return implode('_', str_split($inp));
+  }
 
-	private function doSomethingFunnyWith(string $originalTxt, int $times, Callable $transformation): string {
-		$accumulator = '';
-		for($i=0; $i < $times ;$i++) {
-			$accumulator .= $transformation($originalTxt);
-		}
-		return $accumulator;
-	}
+  private function doSomethingFunnyWith(string $originalTxt, int $times, Callable $transformation): string {
+    $accumulator = '';
+    for($i=0; $i < $times ;$i++) {
+      $accumulator .= $transformation($originalTxt);
+    }
+    return $accumulator;
+  }
 
-	public function testRide(): string {
-		return $this->doSomethingFunnyWith(
-			"DOO",
-			3,
-			[$this, 'underscoresEverywhere'] //now you can pass a method name with a string
-		);
-	}
+  public function testRide(): string {
+    return $this->doSomethingFunnyWith(
+      "DOO",
+      3,
+      [$this, 'underscoresEverywhere'] //now you can pass a method name with a string
+    );
+  }
 }
 
 echo (new Foo())->testRide();
@@ -276,30 +276,30 @@ echo (new Foo())->testRide();
 
 ```php
 class Foo {
-	private youDontWantToRunThisMethod(): void {
-		launchNuclearMissiles();
-		dropDatabase();
-	}
+  private youDontWantToRunThisMethod(): void {
+    launchNuclearMissiles();
+    dropDatabase();
+  }
 
-	private function underscoresEverywhere(string $inp): string {
-		return implode('_', str_split($inp));
-	}
+  private function underscoresEverywhere(string $inp): string {
+    return implode('_', str_split($inp));
+  }
 
-	private function doSomethingFunnyWith(string $originalTxt, int $times, Callable $transformation): string {
-		$accumulator = '';
-		for($i=0; $i < $times ;$i++) {
-			$accumulator .= $transformation($originalTxt);
-		}
-		return $accumulator;
-	}
+  private function doSomethingFunnyWith(string $originalTxt, int $times, Callable $transformation): string {
+    $accumulator = '';
+    for($i=0; $i < $times ;$i++) {
+      $accumulator .= $transformation($originalTxt);
+    }
+    return $accumulator;
+  }
 
-	public function testRide(string $methodName): string {
-		return $this->doSomethingFunnyWith(
-			"DOO",
-			3,
-			[$this, $methodName]
-		);
-	}
+  public function testRide(string $methodName): string {
+    return $this->doSomethingFunnyWith(
+      "DOO",
+      3,
+      [$this, $methodName]
+    );
+  }
 }
 
 $userInput = 'underscoresEverywhere';
@@ -321,28 +321,24 @@ Let's rewrite again our method presenting "D_O_OD_O_OD_O_O" string. Let's say yo
 
 ```php
 class Foo {
-	//that is a place where method underscoresEverywhere was located
-	private function curriedStringFiller(string $glueWith): Closure {
-		return function(string $inp) use ($glueWith): string {
-			return implode($glueWith, str_split($inp));
-		};
-	}
+  //that is a place where method underscoresEverywhere was located
+  private function curriedStringFiller(string $glueWith): Closure {
+    return function(string $inp) use ($glueWith): string {
+      return implode($glueWith, str_split($inp));
+    };
+  }
 
-	private function doSomethingFunnyWith(string $originalTxt, int $times, Closure $transformation): string {
-		$accumulator = '';
-		for($i=0; $i < $times ;$i++) {
-			$accumulator .= $transformation($originalTxt);
-		}
-		return $accumulator;
-	}
+  private function doSomethingFunnyWith(string $originalTxt, int $times, Closure $transformation): string {
+    $accumulator = '';
+    for($i=0; $i < $times ;$i++) {
+      $accumulator .= $transformation($originalTxt);
+    }
+    return $accumulator;
+  }
 
-	public function testRide(): string {
-		return $this->doSomethingFunnyWith(
-			"DOO",
-			3,
-			$this->curriedStringFiller('+')
-		);
-	}
+  public function testRide(): string {
+    return $this->doSomethingFunnyWith("DOO", 3, $this->curriedStringFiller('+'));
+  }
 }
 
 echo (new Foo())->testRide();
@@ -355,11 +351,7 @@ You can see one more PHP syntax keyword used which is `use`. You have to use suc
 
 Let's also look closer at lines:
 ```php
-		return $this->doSomethingFunnyWith(
-			"DOO",
-			3,
-			$this->curriedStringFiller('+')
-		);
+return $this->doSomethingFunnyWith("DOO", 3, $this->curriedStringFiller('+'));
 ```
 Remember that `$this->curriedStringFiller('+')` actually does nothing with a string passed to `doSomethingFunnyWith`. It only returns a new function which is passed to `doSomethingFunnyWith` and then method `doSomethingFunnyWith` in it's internal implementation uses a resulting method to transform a `string` given as a first parameter.
 
@@ -372,11 +364,11 @@ Again - refer to [Wikipedia listing](https://en.wikipedia.org/wiki/First-class_f
 Aa it was mentioned in introduction - this article covers PHP syntax elements required to be able to develop in a functional style, but may not display good practicies. Functional programming crutial principle is immutability. At the same time you could see that in code example we use `for` statement with variables like `$i` and `$accumulator`. Let's add some final touches to the last version of our class to make it purely functional.
 
 ```php
-	private function doSomethingFunnyWith(string $originalTxt, int $times, Closure $transformation): string {
-		return array_reduce(range(1, $times), function(string $accumulator, int $item) use ($transformation, $originalTxt): string {
-			return $accumulator.$transformation($originalTxt);
-		}, '');
-	}
+  private function doSomethingFunnyWith(string $originalTxt, int $times, Closure $transformation): string {
+    return array_reduce(range(1, $times), function(string $accumulator, int $item) use ($transformation, $originalTxt): string {
+      return $accumulator.$transformation($originalTxt);
+    }, '');
+  }
 ```
 
 What happened to doSomethingFunnyWith method?
@@ -388,27 +380,23 @@ With PhpSlang a final form of this class may look like this:
 use PhpSlang\Collection\ListCollection;
 
 class Foo {
-	private function curriedStringFiller(string $glueWith): Closure {
-		return function(string $inp) use ($glueWith): string {
-			return implode($glueWith, str_split($inp));
-		};
-	}
+  private function curriedStringFiller(string $glueWith): Closure {
+    return function(string $inp) use ($glueWith): string {
+      return implode($glueWith, str_split($inp));
+    };
+  }
 
-	private function doSomethingFunnyWith(string $originalTxt, int $times, Closure $transformation): string {
-		//voilà - functional, referentially transparent, readable, chainable, very little or no error risk
-		return (new ListCollection(range(1, $times)))
-			->fold('', function(string $accumulator, int $item) use ($transformation, $originalTxt): string {
-				return $accumulator.$transformation($originalTxt);
-			});
-	}
+  private function doSomethingFunnyWith(string $originalTxt, int $times, Closure $transformation): string {
+    //voilà - functional, referentially transparent, readable, chainable, very little or no error risk
+    return (new ListCollection(range(1, $times)))
+      ->fold('', function(string $accumulator, int $item) use ($transformation, $originalTxt): string {
+        return $accumulator.$transformation($originalTxt);
+      });
+  }
 
-	public function testRide(): string {
-		return $this->doSomethingFunnyWith(
-			"DOO",
-			3,
-			$this->curriedStringFiller('+')
-		);
-	}
+  public function testRide(): string {
+    return $this->doSomethingFunnyWith("DOO", 3, $this->curriedStringFiller('+'));
+  }
 }
 
 echo (new Foo())->testRide();
