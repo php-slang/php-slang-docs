@@ -62,7 +62,7 @@ But let's thing about it for a while. If you want to develop a functional code -
 
 # The solution
 
-`Option` is one of the simplest [monads](../../00_Introduction/03_Dont_be_afraid_of_monads.md) (so simple, that you don't even have to understand a concept of monad to use it).
+`Option` is one of the simplest [monads](../../00_Introduction/03_Monads_for_dummies.md) (so simple, that you don't even have to understand a concept of monad to use it).
 
 `Option` let's you consciously handle existence and non-existence of some data without duct taping.
 
@@ -109,7 +109,7 @@ As you see, we have only one return statement in a controller, all operations ar
 
 ## More complicated example
 
-As you can read in [this article](../../00_Introduction/03_Dont_be_afraid_of_monads.md) monads are able to wrap eachother, and there also exist a possibility to flatten a structure of nested monads of the same kind. Let's consider that we have nested `Options` in our example. Take a look at example DTOs.
+As you can read in [this article](../../00_Introduction/03_Monads_for_dummies.md) monads are able to wrap eachother, and there also exist a possibility to flatten a structure of nested monads of the same kind. Let's consider that we have nested `Options` in our example. Take a look at example DTOs.
 ```php
 class User {
   private $email;
