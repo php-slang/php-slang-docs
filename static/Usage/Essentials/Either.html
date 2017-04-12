@@ -78,7 +78,7 @@
     <div class="Page__header">
         <h1><a href="../../Usage/Essentials/Copy_Trait.html">Usage</a> <svg class="Page__header--separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175"><path d="M360.73 229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1 0s-5.3 13.8 0 19.1l215.5 215.5-215.5 215.5c-5.3 5.3-5.3 13.8 0 19.1 2.6 2.6 6.1 4 9.5 4 3.4 0 6.9-1.3 9.5-4l225.1-225.1c5.3-5.2 5.3-13.8.1-19z"/></svg> <a href="../../Usage/Essentials/Copy_Trait.html">Essentials</a> <svg class="Page__header--separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175"><path d="M360.73 229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1 0s-5.3 13.8 0 19.1l215.5 215.5-215.5 215.5c-5.3 5.3-5.3 13.8 0 19.1 2.6 2.6 6.1 4 9.5 4 3.4 0 6.9-1.3 9.5-4l225.1-225.1c5.3-5.2 5.3-13.8.1-19z"/></svg> <a href="../../Usage/Essentials/Either.html">Either</a></h1>
                 <span style="float: left; font-size: 10px; color: gray;">
-            Friday, October 28, 2016 10:22 AM        </span>
+            Thursday, April 13, 2017 10:18 AM        </span>
                         <span style="float: right; font-size: 10px; color: gray;">
             <a href="https://github.com/php-slang/php-slang-docs/blob/gh-pages/docs/01_Usage/01_Essentials/04_Either.md" target="_blank">Edit on GitHub</a>
         </span>
@@ -86,7 +86,192 @@
 
 
     <div class="s-content">
-            </div>
+        <h1 id="page_The_problem">The problem</h1>
+<p>There are situations when you want to return data that is of a one type or another.
+Sounds weird but there is even a specific <a href="https://wiki.php.net/rfc/multiple-catch" class="external">syntax solution</a>
+for this problem in a PHP (multiple catch is helpful, but Either is more general and clean).
+The most popular situation for using Either is a moment when you want to return a proper data, or an error of some sort.
+The usual solution for situation when you'd like to return a value of a one type or another is
+<a href="https://sourcemaking.com/design_patterns/strategy" class="external">a strategy design pattern</a> (and it's worth to be familiar with
+<em>strategy</em> - maybe that's what you actually need in your situation). But the problem arises when your two kinds of
+result are'nt connected in any meaningful way (you'll destroy you model when you'll mix those two things so they
+want to cooperate when implementing a common interface).</p>
+<p>As it was already said - the most popular situation when you want to use Either is error handling (and btw. this is
+the best, in mathematical point of view, way to handle unexpected situations).</p>
+<h1 id="page_Either_monad">Either monad</h1>
+<p>Either is very similar to <a href="Option.html">Option</a> with a slight difference. When Option could contain something or not,
+either contains something always, but it's content may be one of two types.
+To determine when you want to modify a content of a <em>left side</em>, or <em>right side</em> you use <code>left</code> or <code>right</code> - which
+works like <code>map</code> for option (but for a specified side). When your value if of <code>Right</code> type and you run <code>left</code> on it
+nothing is happening. When your value is of <code>Right</code> type and you run <code>right</code> on it, the value is mapped.
+Both methods <code>left</code> and <code>right</code> have their equivalent for
+flattening nested monads which are called <code>flatLeft</code> and <code>flatRight</code>.</p>
+<p><img src="either.png" alt="Either monad" /></p>
+<h1 id="page_Learn_by_example">Learn by example</h1>
+<p>Let's consider a following situation.</p>
+<p>You have a service that updates a <em>book</em> data by it's id.</p>
+<p>Happy path is that you just give an <em>id</em>, payload with new values and you receive an instance of a <em>BookInfo</em> class.</p>
+<p>Things that may go wrong:</p>
+<ul>
+<li>there is no such book in a DB</li>
+<li>client sent invalid input data</li>
+<li>user have no access to edit this resource</li>
+</ul>
+<p>So we have a following data structures:</p>
+<pre><code class="language-php">class BookId {
+  private $val;
+
+  public function __construct(string $val) {
+    $this-&gt;val = $val;
+  }
+  
+  public function getVal(): string {
+    return $this-&gt;val;
+  }
+}
+
+class BookInfo {
+  protected $id;
+  protected $name;
+  protected $author;
+  
+  public function __construct(
+    BookId $id,
+    string $name,
+    string $author
+  ) {
+    $this-&gt;id = $id;
+    $this-&gt;name = $name;
+    $this-&gt;author = $author;
+  }
+  
+  ... getters for $id, $name and $author
+}
+</code></pre>
+<p>You should also define a service specific errors:</p>
+<pre><code class="language-php">interface BookUpdateError {}
+class BookNotFound implements BookUpdateError {}
+class InvalidInput implements BookUpdateError {}
+class NotAuthorized implements BookUpdateError {}
+</code></pre>
+<p>So our method definition looks in a following way:</p>
+<pre><code class="language-php">public function updateBook(BookId $bookId, BookInput $input, User $requestor): Either;
+</code></pre>
+<p>When we'll have <a href="https://wiki.php.net/rfc/generics" class="external">generic types in PHP </a> (or if you already have it because
+you use <a href="https://docs.hhvm.com/hack/generics/introduction" class="external">HHVM</a>) this code is going to look like:</p>
+<pre><code class="language-php">public function updateBook(BookId $bookId, BookInput $input, User $requestor): Either&lt;BookUpdateError, BookInfo&gt;;
+</code></pre>
+<p>Either class is an <code>abstract class</code>, so your method can actually return a <code>Left</code> with <code>BookUpdateError</code> inside or
+<code>Right</code> with <code>BookInfo</code> inside. Let's consider a following, very naive implementation of this method:</p>
+<pre><code class="language-php">public function updateBook(BookId $bookId, BookInput $input, User $requestor): Either {
+  return $bookId &lt; 10
+    ? new Right($this-&gt;booksDao-&gt;findById($bookId))
+    : new Left(new NotAuthorized());
+}
+</code></pre>
+<p>You can of course end up with much more complicated method which would look like this:</p>
+<pre><code class="language-php">public function updateBook(BookId $bookId, BookInput $input, User $requestor): Either {
+  return $this
+    -&gt;booksDao
+    -&gt;findById($bookId)                   //returns Option&lt;BookInfo&gt;
+    -&gt;map(function(BookInfo $bookInfo) {
+      return new Right($bookInfo);
+    })
+    -&gt;getOrElse(new Left(new BookNotFound())) //this way we end up with Left&lt;BookNotFound&gt; or Right&lt;BookInfo&gt;
+    -&gt;flatRight(function(BookInfo $bookInfo) {
+      return $this-&gt;securityService-&gt;canEditBook($bookId, $requestor-&gt;getId())
+        ? new Right($bookInfo)
+        : new Left(new NotAuthorized());
+    })
+    -&gt;flatRight(function(BookInfo $bookInfo) {
+      return $this-&gt;bookValidationService-&gt;valid($input)
+        ? new Right($this-&gt;booksDao-&gt;update($bookId, $input))
+        : new Left(new InvalidInput());
+    });
+}
+</code></pre>
+<p>To use a result of this method in a controller you probably want to write a code similar to this:</p>
+<pre><code class="language-php">public function actionUpdateBook(string $bookId, Request $request): Response {
+  return $this
+    -&gt;bookUpdaterService
+    -&gt;updateBook($bookId, $this-&gt;bookRequestTransformer-&gt;toInput($request), $this-&gt;getUser())
+    -&gt;left(function(BookUpdateError $error) {
+      //handle error
+    })
+    -&gt;right(function(BookInfo $bookInfo) {
+      return new Response($this-&gt;bookInfoTransformer-&gt;toJson($bookInfo), Response::HTTP_OK);
+    })
+    -&gt;get();
+}
+</code></pre>
+<p>As you see Either monad describes in a great way what is actually happening here.</p>
+<p>In the example above we left an empty implementation of method responsible for mapping a left value of a <code>updateBook</code>
+methods result, to make this example cleaner and easier to understand.</p>
+<p>As we agreed previously <code>BookUpdateError</code> is just an interface and can't exist on it's own. So it natural for us
+that for a <code>Left</code> result we can have few different errors that we'd like to handle in a different ways.</p>
+<p>In this case <a href="../Pattern_Matching.html">pattern matching</a> is helpful.
+Let's write down an action from an example above once again - this time with a complete error handling.</p>
+<pre><code class="language-php">public function actionUpdateBook(string $bookId, Request $request): Response {
+  return $this
+    -&gt;bookUpdaterService
+    -&gt;updateBook($bookId, $this-&gt;bookRequestTransformer-&gt;toInput($request), $this-&gt;getUser())
+    -&gt;left(function(BookUpdateError $error) {
+      return Match::val($error)-&gt;of(
+        new TypeOf(BookNotFound::class, new Response(null, Response::HTTP_NOT_FOUND)),
+        new TypeOf(InvalidInput::class, new Response(null, Response::HTTP_BAD_REQUEST)),
+        new TypeOf(NotAuthorized::class, new Response(null, Response::HTTP_UNAUTHORIZED))
+      );
+    })
+    -&gt;right(function(BookInfo $bookInfo) {
+      return new Response($this-&gt;bookInfoTransformer-&gt;toJson($bookInfo), Response::HTTP_OK);
+    })
+    -&gt;get();
+}
+</code></pre>
+<p>Pretty clean, huh?
+But someone can say we can do such things with regular PHP syntax.</p>
+<p>This is how this code would probably look like with imperative approach instead of functional one:</p>
+<pre><code class="language-php">public function actionUpdateBook(string $bookId, Request $request): Response {
+  try {
+    $bookInfo = $this
+      -&gt;bookUpdaterService
+      -&gt;updateBook($bookId, $this-&gt;bookRequestTransformer-&gt;toInput($request), $this-&gt;getUser());
+        // in this case updateBook method returns BookInfo or throws an exception
+     return new Response($this-&gt;bookInfoTransformer-&gt;toJson($bookInfo), Response::HTTP_OK);
+  } catch (BookNotFound $e) {
+    return new Response(null, Response::HTTP_NOT_FOUND);
+  } catch (InvalidInput $e) {
+    return new Response(null, Response::HTTP_BAD_REQUEST);
+  } catch (NotAuthorized $e) {
+    return new Response(null, Response::HTTP_UNAUTHORIZED);
+  }
+}
+</code></pre>
+<p>Does a code from the last example look bad? No, but this approach has some downsides typical to imperative programming.</p>
+<ol>
+<li>Either monad is a clean indicator that you deal with a method that can return a result or an error.
+When you throw exceptions you, or other developers in you team have to know that your method throws exceptions.
+Dockblocks with @throw may be helpful, but applications tend to be more and in a bigger project you can never be
+sure if some of methods you rely on won't suddenly throw something.</li>
+<li>Exceptions are designed for breaking an execution of a code due to a serious reasons like DB connection errors or other
+quite unexpected runtime errors. You probably already heard that you should'nt implement business logic with exceptions.
+This is exactly this situation. This is quite popular to handle service errors with exceptions, but let's think about
+it this way:</li>
+</ol>
+<ul>
+<li>what kind of error is an invalid input?</li>
+<li>is it really an application error when there is no document in database for a given id?</li>
+<li>is it really an application error when user has no access to specified resource?
+All answers for this questions are <code>NO</code> so you probably should resign from throwing exceptions as well.</li>
+</ul>
+<ol start="3">
+<li>Exceptions are not composable. With Either you can do a lot of stuff that reflects your business requirements
+(in a formalized and easy to reason about way) and reuse it in other places with no harm.</li>
+<li>All types which describe error situation have to extend Exception class, while in fact you may want to have your
+own errors data types which isn't related in type hierarchy to Exception in any way, and isn't bloated with fields and
+methods inherited from Exception class.</li>
+</ol>
+    </div>
 
         <nav>
         <ul class="Pager">

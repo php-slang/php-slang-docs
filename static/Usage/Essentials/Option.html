@@ -78,7 +78,7 @@
     <div class="Page__header">
         <h1><a href="../../Usage/Essentials/Copy_Trait.html">Usage</a> <svg class="Page__header--separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175"><path d="M360.73 229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1 0s-5.3 13.8 0 19.1l215.5 215.5-215.5 215.5c-5.3 5.3-5.3 13.8 0 19.1 2.6 2.6 6.1 4 9.5 4 3.4 0 6.9-1.3 9.5-4l225.1-225.1c5.3-5.2 5.3-13.8.1-19z"/></svg> <a href="../../Usage/Essentials/Copy_Trait.html">Essentials</a> <svg class="Page__header--separator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175"><path d="M360.73 229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1 0s-5.3 13.8 0 19.1l215.5 215.5-215.5 215.5c-5.3 5.3-5.3 13.8 0 19.1 2.6 2.6 6.1 4 9.5 4 3.4 0 6.9-1.3 9.5-4l225.1-225.1c5.3-5.2 5.3-13.8.1-19z"/></svg> <a href="../../Usage/Essentials/Option.html">Option</a></h1>
                 <span style="float: left; font-size: 10px; color: gray;">
-            Tuesday, April 11, 2017 9:58 AM        </span>
+            Wednesday, April 12, 2017 9:38 AM        </span>
                         <span style="float: right; font-size: 10px; color: gray;">
             <a href="https://github.com/php-slang/php-slang-docs/blob/gh-pages/docs/01_Usage/01_Essentials/03_Option.md" target="_blank">Edit on GitHub</a>
         </span>
@@ -136,7 +136,7 @@ Every user of a method <code>findByEmail</code> has to remember this fact fact a
 <p><code>Option</code> let's you consciously handle existence and non-existence of some data without duct taping.</p>
 <p>How is <code>Option</code> implemented in PhpSlang?</p>
 <p>One picture is worth more than a thousand words.</p>
-<p><img src="option.png" alt="Option" /></p>
+<p><img src="option.png" alt="Option monad" /></p>
 <p>Option type is an abstract class. Most probably this is a type you want to return from functions or take as an argument.
 PhpSlang implementation of <code>Option</code> just makes use of a polymorphism and as you can see on a picture above there are two classes <code>Some</code> and <code>None</code> with a different implementations of methods <code>map</code> and <code>getOrElse</code>.</p>
 <p>As you may guess <code>Some</code> class in a kind of <code>Option</code> type which contains some value, while a <code>None</code> contains nothing.</p>
@@ -203,6 +203,7 @@ class Profile {
     return $this-&gt;phone;
   }
 }
+
 class Address {
   private $street;
   private $buildingNumber;
@@ -276,7 +277,9 @@ So it would be safer to write a code above in a following way:</p>
 <p>How to make this code less error prone and easier to reson about? How to make this ball of mud readable and extendible?
 Take a look at example using <code>Option</code>:</p>
 <pre><code class="language-php">public function displayLocalNumber(string $email): string {
-  return $this-&gt;userRepository-&gt;findByEmail($email))
+  return $this
+    -&gt;userRepository
+    -&gt;findByEmail($email))
     -&gt;flatMap(function(User $user): Option {
       return $user-&gt;getProfile();
     })

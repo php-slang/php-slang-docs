@@ -70,7 +70,7 @@ How is `Option` implemented in PhpSlang?
 
 One picture is worth more than a thousand words.
 
-![Option](option.png)
+![Option monad](option.png)
 
 Option type is an abstract class. Most probably this is a type you want to return from functions or take as an argument.
 PhpSlang implementation of `Option` just makes use of a polymorphism and as you can see on a picture above there are two classes `Some` and `None` with a different implementations of methods `map` and `getOrElse`.
@@ -152,6 +152,7 @@ class Profile {
     return $this->phone;
   }
 }
+
 class Address {
   private $street;
   private $buildingNumber;
@@ -229,7 +230,9 @@ How to make this code less error prone and easier to reson about? How to make th
 Take a look at example using `Option`:
 ```php
 public function displayLocalNumber(string $email): string {
-  return $this->userRepository->findByEmail($email))
+  return $this
+    ->userRepository
+    ->findByEmail($email))
     ->flatMap(function(User $user): Option {
       return $user->getProfile();
     })

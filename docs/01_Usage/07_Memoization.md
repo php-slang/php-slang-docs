@@ -50,3 +50,4 @@ Then we assigned to this field a result of `(new Memo)->memoize` method which ta
 What we actually produced is a class with an object inside which will run our methods as previously, but when it's called again - already computed data will be returned.
 
 ## Dangerzone 1
+

@@ -1,0 +1,62 @@
+# The syntactic solution (not actually a solution)
+
+There are two ideas that are discussed (and implemented) in PHP that touch this topic.
+One of them is:
+
+It's related to exceptions catching and it allows you to catch exceptions of many types eg.:
+
+```php
+try {
+   // Some code...
+} catch (ExceptionType1 | ExceptionType2 $e) {
+   // Code to handle the exception
+} catch (\Exception $e) {
+   // ...
+}
+```
+
+There is also an ongoing discussion if we wan't to have a following construct in PHP:
+```php
+function test(): FailObject|SuccessObject {}
+```
+That would allow us to either return a successful object or an error.
+
+Also a PHPDoc allows similar notation:
+
+```php
+/**
+ * @return FailObject|SuccessObject
+ */
+function someExpr();
+```
+
+What is wrong with such solutions?
+
+Because they solve a semantic problems with a syntax!
+Such approach not only leads to language with a bloated syntax, but prevents future developers from customization.
+When a functionality is described as part of a syntax specification, then it's fixed, even if you manage to
+introduce some changes, you're breaking your implementations compliance with standard.
+
+There is one more addition to it. Lets consider a following method:
+```php
+public function exampleWithEither(): TypeA | TypeB;
+```
+
+How to handle result of such method? Probably in a following way:
+
+```php
+$exampleResult = $this->exampleWithEither();
+
+if($exampleResult instanceOf TypeA) {
+  ???
+}
+
+if($exampleResult instanceOf TypeB) {
+  ???
+}
+```
+
+Design pattern displayed above is called "ifology" and you probably don't want your family and neighbours to know
+that you write such code in work. Even worse - example displayed above does'nt cover a fact that TypeB may be just
+an interface with eg. multiple error situations that you probably want to handle in a different ways.
+
