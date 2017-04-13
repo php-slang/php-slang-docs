@@ -58,7 +58,7 @@ public function userByEmailAction(string $email): Resource {
 ```
 and this tree of possible exceptions to be handled tends to grow (a lot).
 
-But let's thing about it for a while. If you want to develop a functional code - where exeptions fit in a lamda calculus? The answer is - the don't. So think about it apart from functional programming. Go back to classical OOP principles. When you should use exceptions? You should use exceptions to sygnalize an error in you application runtime and change a normal flow of program execution. Rhetoric question: what kind of error is a situation when you can't find an entity in a database (DB connection works fine, DB is running, DB properly responds to your queries). The answer is - it's not an error and you should not use exceptions in such situation. A lack of object is an information itself. In our example: you need an information that your users table do not contain an user with a given email.
+But let's thing about it for a while. If you want to develop a functional code - where exeptions fit in a lamda calculus? The answer is - they don't. So think about it apart from functional programming. Go back to classical OOP principles. When you should use exceptions? You should use exceptions to signalize an error in your application runtime and change a normal flow of program execution. Rhetoric question: what kind of error is a situation when you can't find an entity in a database (DB connection works fine, DB is running, DB properly responds to your queries). The answer is - it's not an error and you should not use exceptions in such situation. A lack of object is an information itself. In our example: you need an information that your users table do not contain an user with a given email.
 
 # The solution
 
