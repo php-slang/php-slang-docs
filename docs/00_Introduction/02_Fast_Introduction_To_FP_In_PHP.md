@@ -10,7 +10,7 @@ This is not a tutorial on how to program functionally and/or with a PhpSlang lib
 
 This is a great quote, especially in case of PHP which usually isn't a first thought when you talk about FP.
 
-Well this quote isn't true for every programming language. If you want to program functionally you need one crucial feature in a language: **Function is a fisrt class citizen**.
+Well this quote isn't true for every programming language. If you want to program functionally you need one crucial feature in a language: **Function is a first class citizen**.
 
 What does it mean?
 
